@@ -9,7 +9,13 @@ const config = {
   height: 600,
   physics: {
     //arcade physics plugin, manages physics simulations
-    default: 'arcade'
+    default: 'arcade',
+    arcade: {
+      debug: true,
+      gravity: {
+        y: 400,
+      }
+    }
   },
   scene: {
     //order of execution follows order in object
@@ -21,6 +27,11 @@ const config = {
 }
 
 let bird = null;
+const flapVelocity = 250;
+const initialBirdPosition = {
+  x: config.width * 0.1,
+  y: config.height / 2
+}
 
 //loading assets such as images, music, animations etc
 function preload() {
@@ -39,16 +50,35 @@ function create() {
   //image() takes 3 arguments, x coord, y coord and key of image set in preload
   this.add.image(0, 0, 'sky-bg').setOrigin(0);
   //adds a sprite to the physics engine, in our case arcade
-  bird = this.physics.add.sprite(config.width / 10, config.height / 2, 'bird').setOrigin(0);
-  //gravity y 200 means your sprite will fall 200 pxs a second 
-  // bird.body.gravity.y = 0;
-  bird.body.gravity.y = 200;
+  bird = this.physics.add.sprite(initialBirdPosition.x, initialBirdPosition.y, 'bird').setOrigin(0);
+  this.input.on('pointerdown', flap);
+
+  this.input.keyboard.createCursorKeys()
+
+  this.input.keyboard.on('keydown-SPACE', flap);
+  bird.body.velocity.x = 100;
 }
 
 //app should render about 60fps - 60 executed of update every second
 //delta time from the last frame - in ms - about 16ms 
 //60 * 16 = 1000ms or 1s
 function update(time, delta) {
+
+  console.log(bird.y);
+  if (bird.y > (config.height) || bird.y < 0) {
+    restartBirdPosition();
+  }
+}
+
+function flap() {
+  bird.body.velocity.y = -flapVelocity;
+}
+
+function restartBirdPosition() {
+  //rests x and y positions of bird and sets velocity to 0 so it does not increase each time you restart
+  bird.x = initialBirdPosition.x;
+  bird.y = initialBirdPosition.y;
+  bird.body.velocity.y = 0;
 
 }
 
