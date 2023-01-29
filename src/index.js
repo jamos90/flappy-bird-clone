@@ -12,9 +12,6 @@ const config = {
     default: 'arcade',
     arcade: {
       debug: true,
-      gravity: {
-        y: 400,
-      }
     }
   },
   scene: {
@@ -27,21 +24,33 @@ const config = {
 }
 
 let bird = null;
-const flapVelocity = 250;
+
+let upperPipe = null;
+let lowerPipe = null;
+let pipeVerticalDistanceRange = [150, 250];
+//returns a number between the two
+let pipeVerticalDistance = Phaser.Math.Between(pipeVerticalDistanceRange[0], pipeVerticalDistanceRange[1]); 
+
+
+const flapVelocity = 200;
 const initialBirdPosition = {
   x: config.width * 0.1,
   y: config.height / 2
+}
+
+const initialPipePosition = {
+  x: config.width * 0.5,
+  y: config.height/ 2
 }
 
 //loading assets such as images, music, animations etc
 function preload() {
   //this context = scene. Contains functions and properties that can be used
 
-  //loads sky image from assets
+  //loads images from assets
   this.load.image('sky-bg', 'assets/sky.png');
-
-  //loads square image from assests
   this.load.image('bird', 'assets/bird.png');
+  this.load.image('pipe', 'assets/pipe.png');
 }
 
 //inits instances of objects for application
@@ -51,12 +60,17 @@ function create() {
   this.add.image(0, 0, 'sky-bg').setOrigin(0);
   //adds a sprite to the physics engine, in our case arcade
   bird = this.physics.add.sprite(initialBirdPosition.x, initialBirdPosition.y, 'bird').setOrigin(0);
+  bird.body.gravity.y = 400;
+  bird.body.velocity.x = 100;
+  upperPipe = this.physics.add.sprite(400, 100, 'pipe').setOrigin(0, 1);
+  lowerPipe = this.physics.add.sprite(400, upperPipe.y + pipeVerticalDistance, 'pipe').setOrigin(0,0);
+
   this.input.on('pointerdown', flap);
 
   this.input.keyboard.createCursorKeys()
 
   this.input.keyboard.on('keydown-SPACE', flap);
-  bird.body.velocity.x = 100;
+  // bird.body.velocity.x = 100;
 }
 
 //app should render about 60fps - 60 executed of update every second
