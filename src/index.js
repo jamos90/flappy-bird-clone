@@ -76,25 +76,20 @@ function create() {
 
   //sets velocity of all pipes in group
   pipes.setVelocityX(-200);
-
-
   this.input.on('pointerdown', flap);
-
   this.input.keyboard.createCursorKeys()
-
   this.input.keyboard.on('keydown-SPACE', flap);
-  // bird.body.velocity.x = 100;
+
 }
 
 //app should render about 60fps - 60 executed of update every second
 //delta time from the last frame - in ms - about 16ms 
 //60 * 16 = 1000ms or 1s
 function update(time, delta) {
-
-  console.log(bird.y);
   if (bird.y > (config.height) || bird.y < 0) {
     restartBirdPosition();
   }
+  recyclePipes();
 }
 
 function placePipe(uPipe, lPipe) {
@@ -107,6 +102,20 @@ function placePipe(uPipe, lPipe) {
   uPipe.y = pipeVerticalPosition;
   lPipe.x = uPipe.x;
   lPipe.y = uPipe.y + pipeVerticalDistance;
+}
+
+function recyclePipes() {
+  const tempPipes = []
+  pipes.getChildren().forEach((pipe) => {
+    //checks each pipe position. Right bound is right side of sprite 
+    if (pipe.getBounds().right <= 0) {
+      //recycle pipe
+      tempPipes.push(pipe);
+      if(tempPipes.length === 2) {
+        placePipe(...tempPipes);
+      }
+    }
+  });
 }
 
 function flap() {
@@ -126,7 +135,6 @@ function getRightMostPipe() {
   pipes.getChildren().forEach((pipe) => {
     rightMostX = Math.max(pipe.x, rightMostX);
   });
-
   return rightMostX;
 }
 
