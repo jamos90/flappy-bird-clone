@@ -23,14 +23,15 @@ const config = {
   }
 }
 
+const PIPES_TO_RENDER = 4;
+
 let bird = null;
+let pipes = null;
 
-let upperPipe = null;
-let lowerPipe = null;
+let pipeHorizontalDistance = 0;
+
 let pipeVerticalDistanceRange = [150, 250];
-//returns a number between the two
-let pipeVerticalDistance = Phaser.Math.Between(pipeVerticalDistanceRange[0], pipeVerticalDistanceRange[1]); 
-
+let pipeHorizontalDistanceRange = [300, 500];
 
 const flapVelocity = 200;
 const initialBirdPosition = {
@@ -61,9 +62,21 @@ function create() {
   //adds a sprite to the physics engine, in our case arcade
   bird = this.physics.add.sprite(initialBirdPosition.x, initialBirdPosition.y, 'bird').setOrigin(0);
   bird.body.gravity.y = 400;
-  bird.body.velocity.x = 100;
-  upperPipe = this.physics.add.sprite(400, 100, 'pipe').setOrigin(0, 1);
-  lowerPipe = this.physics.add.sprite(400, upperPipe.y + pipeVerticalDistance, 'pipe').setOrigin(0,0);
+  
+  //creates empty pipe group 
+  pipes = this.physics.add.group();
+
+  for(let i = 0; i < PIPES_TO_RENDER; i ++) {
+    //adds upper and lower pipe into group
+    let upperPipe = pipes.create(0, 0, 'pipe').setOrigin(0, 1);
+    let lowerPipe = pipes.create(0, 0, 'pipe').setOrigin(0,0);
+
+    placePipe(upperPipe, lowerPipe)
+  }
+
+  //sets velocity of all pipes in group
+  pipes.setVelocityX(-200);
+
 
   this.input.on('pointerdown', flap);
 
@@ -84,6 +97,18 @@ function update(time, delta) {
   }
 }
 
+function placePipe(uPipe, lPipe) {
+  const rightMostXPosition = getRightMostPipe();
+  const pipeVerticalDistance = Phaser.Math.Between(pipeVerticalDistanceRange[0], pipeVerticalDistanceRange[1]); 
+  const pipeVerticalPosition = Phaser.Math.Between(0 + 20, config.height - 20 - pipeVerticalDistance);
+  const pipeHorizontalDistance = Phaser.Math.Between(...pipeHorizontalDistanceRange);
+
+  uPipe.x = rightMostXPosition + pipeHorizontalDistance;
+  uPipe.y = pipeVerticalPosition;
+  lPipe.x = uPipe.x;
+  lPipe.y = uPipe.y + pipeVerticalDistance;
+}
+
 function flap() {
   bird.body.velocity.y = -flapVelocity;
 }
@@ -93,7 +118,16 @@ function restartBirdPosition() {
   bird.x = initialBirdPosition.x;
   bird.y = initialBirdPosition.y;
   bird.body.velocity.y = 0;
+}
 
+function getRightMostPipe() {
+  let rightMostX = 0;
+  //gets all from group as array
+  pipes.getChildren().forEach((pipe) => {
+    rightMostX = Math.max(pipe.x, rightMostX);
+  });
+
+  return rightMostX;
 }
 
 new Phaser.Game(config);
