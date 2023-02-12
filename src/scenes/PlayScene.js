@@ -12,6 +12,10 @@ class PlayScene extends Phaser.Scene {
     this.pipeVerticalDistanceRange = [150, 250];
     this.pipeHorizontalDistanceRange = [300, 500];
     this.flapVelocity = 300;
+    this.score = 0;
+    this.scoreText = '';
+    this.bestScore = 0;
+    this.bestScoreText = '';
   }
 
 //loading assets such as images, music, animations etc
@@ -30,6 +34,8 @@ class PlayScene extends Phaser.Scene {
     this.createPipes();
     this.handleInputs();
     this.createColliders();
+    this.createScore();
+    this.createBestScore();
   }
 
 //app should render about 60fps - 60 executed of update every second
@@ -106,6 +112,7 @@ handleInputs() {
         tempPipes.push(pipe);
         if(tempPipes.length === 2) {
           this.placePipe(...tempPipes);
+          this.increaseScore();
         }
       }
     });
@@ -118,6 +125,13 @@ handleInputs() {
   gameOver() {
     this.physics.pause();
     this.bird.setTint(0xEE4824);
+
+    const bestScoreText = localStorage.getItem('best_score');
+    const bestScore = bestScoreText && parseInt(bestScoreText, 10);
+
+    if (this.score > bestScore || !bestScore) { 
+      this.setBestScore();
+    }
     //restart re-calls your create function
     this.time.addEvent({
       delay: 1000,
@@ -141,6 +155,28 @@ handleInputs() {
     if (this.bird.getBounds().bottom >= (this.config.height) || this.bird.y <= 0) {
       this.gameOver();
     }
+  }
+
+  createScore() {
+    this.score = 0;
+    this.scoreText = this.add.text(16,16, `Score: ${0}`, { fontSize: '32px', fill: '#000' });
+  }
+
+  createBestScore() {
+    const bestScore = localStorage.getItem('best_score');
+    this.bestScore = bestScore;
+    this.bestScoreText = this.add.text(16, 52, `Best score: ${bestScore || 0}`, { fontSize: '18px', fill: '#000' });
+  }
+
+  increaseScore() {
+    this.score++;
+    this.scoreText.setText(`Score: ${this.score}`);
+  }
+
+  setBestScore() {
+    localStorage.setItem('best_score', this.score);
+    this.bestScore = this.score;
+    this.bestScoreText.setText(`Best score: ${this.bestScore}`);
   }
 }
 
