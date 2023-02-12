@@ -12,6 +12,8 @@ class PlayScene extends Phaser.Scene {
     this.pipeVerticalDistanceRange = [150, 250];
     this.pipeHorizontalDistanceRange = [300, 500];
     this.flapVelocity = 300;
+    this.score = 0;
+    this.scoreText = ''
   }
 
 //loading assets such as images, music, animations etc
@@ -30,6 +32,7 @@ class PlayScene extends Phaser.Scene {
     this.createPipes();
     this.handleInputs();
     this.createColliders();
+    this.createScore();
   }
 
 //app should render about 60fps - 60 executed of update every second
@@ -141,6 +144,11 @@ handleInputs() {
     if (this.bird.getBounds().bottom >= (this.config.height) || this.bird.y <= 0) {
       this.gameOver();
     }
+  }
+
+  createScore() {
+    this.score = 0;
+    this.scoreText = this.add.text(16,16, `Score: ${0}`, { fontSize: '32px', fill: '#000' });
   }
 }
 
