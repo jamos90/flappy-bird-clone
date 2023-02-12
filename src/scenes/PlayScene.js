@@ -26,12 +26,14 @@ class PlayScene extends Phaser.Scene {
     this.load.image('sky-bg', 'assets/sky.png');
     this.load.image('bird', 'assets/bird.png');
     this.load.image('pipe', 'assets/pipe.png');
+    this.load.image('pause', 'assets/pause.png');
   }
 
   create() {
     this.createBackGround();
     this.createBird();
     this.createPipes();
+    this.createPauseButton();
     this.handleInputs();
     this.createColliders();
     this.createScore();
@@ -177,6 +179,13 @@ handleInputs() {
     localStorage.setItem('best_score', this.score);
     this.bestScore = this.score;
     this.bestScoreText.setText(`Best score: ${this.bestScore}`);
+  }
+
+  createPauseButton() {
+    this.add
+    .image(this.config.width - 10, this.config.height - 10, 'pause')
+    .setOrigin(1,1)
+    .setScale(2);
   }
 }
 
