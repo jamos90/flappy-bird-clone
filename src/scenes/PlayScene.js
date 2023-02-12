@@ -11,7 +11,7 @@ class PlayScene extends Phaser.Scene {
     this.pipeHorizontalDistance = 0;
     this.pipeVerticalDistanceRange = [150, 250];
     this.pipeHorizontalDistanceRange = [300, 500];
-    this.flapVelocity = 200;
+    this.flapVelocity = 300;
   }
 
 //loading assets such as images, music, animations etc
@@ -49,7 +49,7 @@ createBackGround(){
 createBird() {
   //adds a sprite to the physics engine, in our case arcade
   this.bird = this.physics.add.sprite(this.config.startingPosition.x, this.config.startingPosition.y, 'bird').setOrigin(0);
-  this.bird.body.gravity.y = 400;
+  this.bird.body.gravity.y = 600;
   this.bird.setCollideWorldBounds(true);
 }
 
@@ -116,13 +116,16 @@ handleInputs() {
   }
   
   gameOver() {
-    //rests x and y positions of bird and sets velocity to 0 so it does not increase each time you restart
-    // this.bird.x = this.config.startingPosition.x;
-    // this.bird.y = this.config.startingPosition.y;
-    // this.bird.body.velocity.y = 0;
-
     this.physics.pause();
     this.bird.setTint(0xEE4824);
+    //restart re-calls your create function
+    this.time.addEvent({
+      delay: 1000,
+      callback: () => {
+        this.scene.restart();
+      },
+      loop: false
+    })
   }
 
   getRightMostPipe() {
