@@ -109,6 +109,7 @@ handleInputs() {
         tempPipes.push(pipe);
         if(tempPipes.length === 2) {
           this.placePipe(...tempPipes);
+          this.increaseScore();
         }
       }
     });
@@ -149,6 +150,11 @@ handleInputs() {
   createScore() {
     this.score = 0;
     this.scoreText = this.add.text(16,16, `Score: ${0}`, { fontSize: '32px', fill: '#000' });
+  }
+
+  increaseScore() {
+    this.score++;
+    this.scoreText.setText(`Score: ${this.score}`);
   }
 }
 
