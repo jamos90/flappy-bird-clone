@@ -1,11 +1,10 @@
-import Phaser from 'phaser';
+import BaseScene from './BaseScene';
 
 const PIPES_TO_RENDER = 4;
 
-class PlayScene extends Phaser.Scene {
+class PlayScene extends BaseScene {
   constructor(config) {
-    super('PlayScene');
-    this.config = config;
+    super('PlayScene', config);
     this.bird = null;
     this.pipes = null;
     this.pipeHorizontalDistance = 0;
@@ -18,24 +17,16 @@ class PlayScene extends Phaser.Scene {
     this.bestScoreText = '';
   }
 
-//loading assets such as images, music, animations etc
-  preload() {
-  //this context = scene. Contains functions and properties that can be used
-
-  //loads images from assets
-    this.load.image('sky-bg', 'assets/sky.png');
-    this.load.image('bird', 'assets/bird.png');
-    this.load.image('pipe', 'assets/pipe.png');
-  }
-
   create() {
-    this.createBackGround();
+    super.create();
     this.createBird();
     this.createPipes();
-    this.handleInputs();
+    this.createPauseButton();
     this.createColliders();
     this.createScore();
     this.createBestScore();
+    this.handleInputs();
+    this.listenToEvents();
   }
 
 //app should render about 60fps - 60 executed of update every second
@@ -177,6 +168,44 @@ handleInputs() {
     localStorage.setItem('best_score', this.score);
     this.bestScore = this.score;
     this.bestScoreText.setText(`Best score: ${this.bestScore}`);
+  }
+
+  createPauseButton() {
+    const pauseButton = this.add
+    .image(this.config.width - 10, this.config.height - 10, 'pause')
+    .setOrigin(1,1)
+    .setScale(2)
+    .setInteractive();
+
+    pauseButton.on('pointerdown', () => {
+      this.physics.pause();
+      this.scene.pause();
+      this.scene.launch('PauseScene');
+    })
+  }
+
+  listenToEvents() {
+    if (this.pauseEvent) { return; }
+    this.pauseEvent = this.events.on('resume', () => {
+      this.initialTime = 3; 
+      this.countDownText = this.add.text(...this.screenCenter, 'Fly in ' + this.initialTime, {fontSize: 32, fill: '#ffff'}).setOrigin(0.5);
+      this.timedEvent = this.time.addEvent({
+        delay: 1000,
+        callback: this.countDown,
+        callbackScope: this,
+        loop: true,
+      });
+    })
+  }
+
+  countDown() {
+    this.initialTime--;
+    this.countDownText.setText('Fly in: ' + this.initialTime);
+    if (this.initialTime <= 0) {
+      this.countDownText.setText('');
+      this.physics.resume();
+      this.timedEvent.remove();
+    }
   }
 }
 
