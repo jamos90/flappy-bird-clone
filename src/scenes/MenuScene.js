@@ -27,8 +27,19 @@ class MenuScene extends BaseScene {
     textGameObject.on('pointerout', () => {
       textGameObject.setStyle({fill: '#fff'})
     });
+
+    textGameObject.on('pointerup', () => {
+      this.handleMenuItemClick(menuItem);
+    });
   }
 
+  handleMenuItemClick(menuItem) {
+    menuItem.scene && this.scene.start(menuItem.scene); 
+
+    if(menuItem.text === 'Exit') {
+      this.game.destroy(true);
+    }
+  }
 }
 
 export default MenuScene;
