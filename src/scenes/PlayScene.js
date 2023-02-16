@@ -15,6 +15,7 @@ class PlayScene extends BaseScene {
     this.scoreText = '';
     this.bestScore = 0;
     this.bestScoreText = '';
+    this.isPaused = false;
   }
 
   create() {
@@ -110,7 +111,9 @@ handleInputs() {
   }
   
   flap() {
-    this.bird.body.velocity.y = -this.flapVelocity;
+    if (!this.isPaused) {
+      this.bird.body.velocity.y = -this.flapVelocity;
+    }
   }
   
   gameOver() {
@@ -171,6 +174,7 @@ handleInputs() {
   }
 
   createPauseButton() {
+    this.isPaused = false;
     const pauseButton = this.add
     .image(this.config.width - 10, this.config.height - 10, 'pause')
     .setOrigin(1,1)
@@ -178,6 +182,7 @@ handleInputs() {
     .setInteractive();
 
     pauseButton.on('pointerdown', () => {
+      this.isPaused = true;
       this.physics.pause();
       this.scene.pause();
       this.scene.launch('PauseScene');
@@ -202,6 +207,7 @@ handleInputs() {
     this.initialTime--;
     this.countDownText.setText('Fly in: ' + this.initialTime);
     if (this.initialTime <= 0) {
+      this.isPaused = false;
       this.countDownText.setText('');
       this.physics.resume();
       this.timedEvent.remove();
