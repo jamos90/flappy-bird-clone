@@ -34,6 +34,7 @@ class MenuScene extends BaseScene {
   }
 
   handleMenuItemClick(menuItem) {
+    console.log(menuItem);
     menuItem.scene && this.scene.start(menuItem.scene); 
 
     if(menuItem.text === 'Exit') {

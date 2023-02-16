@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import PlayScene from './scenes/PlayScene';
 import MenuScene from './scenes/MenuScene';
 import PreloadScene from './scenes/PreloadScene';
+import ScoreScene from './scenes/ScoreScene';
 
 //config passed to phase game object
 const WIDTH = 800;
@@ -17,7 +18,8 @@ const SHARED_CONFIG = {
 const scenes = [
   PreloadScene,
   MenuScene, 
-  PlayScene
+  ScoreScene,
+  PlayScene,
 ]
 
 const createScene = scene => new scene(SHARED_CONFIG);
