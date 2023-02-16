@@ -1,19 +1,17 @@
-import Phaser from 'phaser'; 
+import BaseScene from './BaseScene';
 
-class MenuScene extends Phaser.Scene  {
+class MenuScene extends BaseScene {
   constructor(config) {
-    super('MenuScene');
+    super('MenuScene', config);
     this.config = config;
 
   }
 
   create() {
-    this.add.image(0, 0, 'sky-bg').setOrigin(0);
+    super.create();
+    this.scene.start('PlayScene');
   }
 
-  update() {
-
-  }
 }
 
 export default MenuScene;
