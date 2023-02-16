@@ -18,17 +18,6 @@ class PlayScene extends Phaser.Scene {
     this.bestScoreText = '';
   }
 
-//loading assets such as images, music, animations etc
-  preload() {
-  //this context = scene. Contains functions and properties that can be used
-
-  //loads images from assets
-    this.load.image('sky-bg', 'assets/sky.png');
-    this.load.image('bird', 'assets/bird.png');
-    this.load.image('pipe', 'assets/pipe.png');
-    this.load.image('pause', 'assets/pause.png');
-  }
-
   create() {
     this.createBackGround();
     this.createBird();
@@ -182,10 +171,17 @@ handleInputs() {
   }
 
   createPauseButton() {
-    this.add
+    const pauseButton = this.add
     .image(this.config.width - 10, this.config.height - 10, 'pause')
     .setOrigin(1,1)
-    .setScale(2);
+    .setScale(2)
+    .setInteractive();
+
+    pauseButton.on('pointerdown', () => {
+      this.physics.pause();
+      this.scene.pause();
+
+    })
   }
 }
 
