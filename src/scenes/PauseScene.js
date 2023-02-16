@@ -33,11 +33,16 @@ class PauseScene extends BaseScene {
   }
 
   handleMenuItemClick(menuItem) {
-    console.log('clicked', menuItem);
+    if (menuItem.scene && menuItem.text.toLowerCase() === 'continue') {
+      this.scene.stop();
+      this.scene.resume(menuItem.scene);
+    }
+
+    if (menuItem.scene && menuItem.text.toLowerCase() === 'exit') {
+      this.scene.stop('PlayScene');
+      this.scene.start('MenuScene');
+    }
   }
-
-
-
 
 }
 
