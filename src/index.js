@@ -3,6 +3,7 @@ import PlayScene from './scenes/PlayScene';
 import MenuScene from './scenes/MenuScene';
 import PreloadScene from './scenes/PreloadScene';
 import ScoreScene from './scenes/ScoreScene';
+import PauseScene from './scenes/PauseScene';
 
 //config passed to phase game object
 const WIDTH = 800;
@@ -20,6 +21,7 @@ const scenes = [
   MenuScene, 
   ScoreScene,
   PlayScene,
+  PauseScene
 ]
 
 const createScene = scene => new scene(SHARED_CONFIG);
