@@ -22,10 +22,11 @@ class PlayScene extends BaseScene {
     this.createBird();
     this.createPipes();
     this.createPauseButton();
-    this.handleInputs();
     this.createColliders();
     this.createScore();
     this.createBestScore();
+    this.handleInputs();
+    this.listenToEvents();
   }
 
 //app should render about 60fps - 60 executed of update every second
@@ -181,6 +182,30 @@ handleInputs() {
       this.scene.pause();
       this.scene.launch('PauseScene');
     })
+  }
+
+  listenToEvents() {
+    if (this.pauseEvent) { return; }
+    this.pauseEvent = this.events.on('resume', () => {
+      this.initialTime = 3; 
+      this.countDownText = this.add.text(...this.screenCenter, 'Fly in ' + this.initialTime, {fontSize: 32, fill: '#ffff'}).setOrigin(0.5);
+      this.timedEvent = this.time.addEvent({
+        delay: 1000,
+        callback: this.countDown,
+        callbackScope: this,
+        loop: true,
+      });
+    })
+  }
+
+  countDown() {
+    this.initialTime--;
+    this.countDownText.setText('Fly in: ' + this.initialTime);
+    if (this.initialTime <= 0) {
+      this.countDownText.setText('');
+      this.physics.resume();
+      this.timedEvent.remove();
+    }
   }
 }
 
