@@ -42,6 +42,17 @@ class PlayScene extends BaseScene {
     this.createBestScore();
     this.handleInputs();
     this.listenToEvents();
+
+    this.anims.create({
+      key: 'fly',
+      frames: this.anims.generateFrameNumbers('bird', {start: 8, end: 15 }),
+      //frame rate 24fps default 
+      frameRate: 8,
+      //repeat infite times
+      repeat: -1
+    });
+
+    this.bird.play('fly');
   }
 
 //app should render about 60fps - 60 executed of update every second
@@ -60,9 +71,13 @@ createBackGround(){
 
 createBird() {
   //adds a sprite to the physics engine, in our case arcade
-  this.bird = this.physics.add.sprite(this.config.startingPosition.x, this.config.startingPosition.y, 'bird').setOrigin(0);
+  this.bird = this.physics.add.sprite(this.config.startingPosition.x, this.config.startingPosition.y, 'bird')
+  .setScale(3)
+  .setFlipX(true)
+  .setOrigin(0);
   this.bird.body.gravity.y = 600;
   this.bird.setCollideWorldBounds(true);
+  this.bird.setBodySize(this.bird.width, this.bird.height - 8);
 }
 
 createPipes() {
