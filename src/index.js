@@ -6,7 +6,7 @@ import ScoreScene from './scenes/ScoreScene';
 import PauseScene from './scenes/PauseScene';
 
 //config passed to phase game object
-const WIDTH = 800;
+const WIDTH = 400;
 const HEIGHT = 600
 const BIRD_POSITION  = {x: WIDTH * 0.1, y: HEIGHT/2}
 

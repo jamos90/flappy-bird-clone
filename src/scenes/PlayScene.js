@@ -8,16 +8,31 @@ class PlayScene extends BaseScene {
     this.bird = null;
     this.pipes = null;
     this.pipeHorizontalDistance = 0;
-    this.pipeVerticalDistanceRange = [150, 250];
-    this.pipeHorizontalDistanceRange = [300, 500];
     this.flapVelocity = 300;
     this.score = 0;
     this.scoreText = '';
     this.bestScore = 0;
     this.bestScoreText = '';
+    this.isPaused = false;
+    this.currentDifficulty = 'easy';
+    this.difficulties = {
+      'easy': {
+        pipeHorizontalDistanceRange: [300, 350],
+        pipeVerticalDistanceRange: [150, 200]
+      },
+      'normal': {
+        pipeHorizontalDistanceRange: [280, 330],
+        pipeVerticalDistanceRange: [140, 190]
+      },
+      'hard': {
+        pipeHorizontalDistanceRange: [250, 310],
+        pipeVerticalDistanceRange: [120, 170]
+      }
+    }
   }
 
   create() {
+    this.currentDifficulty = 'easy';
     super.create();
     this.createBird();
     this.createPipes();
@@ -82,10 +97,11 @@ handleInputs() {
 }
 
   placePipe(uPipe, lPipe) {
+    const difficulties = this.difficulties[this.currentDifficulty]
     const rightMostXPosition = this.getRightMostPipe();
-    const pipeVerticalDistance = Phaser.Math.Between(this.pipeVerticalDistanceRange[0], this.pipeVerticalDistanceRange[1]); 
+    const pipeVerticalDistance = Phaser.Math.Between(...difficulties.pipeVerticalDistanceRange); 
     const pipeVerticalPosition = Phaser.Math.Between(0 + 20, this.config.height - 20 - pipeVerticalDistance);
-    const pipeHorizontalDistance = Phaser.Math.Between(...this.pipeHorizontalDistanceRange);
+    const pipeHorizontalDistance = Phaser.Math.Between(...difficulties.pipeHorizontalDistanceRange);
   
     uPipe.x = rightMostXPosition + pipeHorizontalDistance;
     uPipe.y = pipeVerticalPosition;
@@ -104,13 +120,26 @@ handleInputs() {
         if(tempPipes.length === 2) {
           this.placePipe(...tempPipes);
           this.increaseScore();
+          this.increaseDifficulty();
         }
       }
     });
   }
-  
+
+  increaseDifficulty() {
+    if (this.score === 5) {
+      this.currentDifficulty = 'normal'
+    }
+
+    if (this.score === 10) {
+      this.currentDifficulty = 'hard'
+    }
+  }
+   
   flap() {
-    this.bird.body.velocity.y = -this.flapVelocity;
+    if (!this.isPaused) {
+      this.bird.body.velocity.y = -this.flapVelocity;
+    }
   }
   
   gameOver() {
@@ -171,6 +200,7 @@ handleInputs() {
   }
 
   createPauseButton() {
+    this.isPaused = false;
     const pauseButton = this.add
     .image(this.config.width - 10, this.config.height - 10, 'pause')
     .setOrigin(1,1)
@@ -178,6 +208,7 @@ handleInputs() {
     .setInteractive();
 
     pauseButton.on('pointerdown', () => {
+      this.isPaused = true;
       this.physics.pause();
       this.scene.pause();
       this.scene.launch('PauseScene');
@@ -202,6 +233,7 @@ handleInputs() {
     this.initialTime--;
     this.countDownText.setText('Fly in: ' + this.initialTime);
     if (this.initialTime <= 0) {
+      this.isPaused = false;
       this.countDownText.setText('');
       this.physics.resume();
       this.timedEvent.remove();
