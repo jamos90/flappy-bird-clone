@@ -106,10 +106,11 @@ createPipes() {
 }
 
 createLives() {
+  if(LIVES_COUNT ===0) LIVES_COUNT = 3;
   let xOffSet = 10;
   this.lives = this.physics.add.group();
   for (let i = 0; i < LIVES_COUNT; i ++) {
-    const lifeIcon = this.lives.create(xOffSet, 80, 'life_icon').setOrigin(0,0);
+    this.lives.create(xOffSet, 80, 'life_icon').setOrigin(0,0);
     xOffSet += 20;
   }
 }
@@ -277,10 +278,10 @@ handleInputs() {
 
   handleRemoveLife() {
     const lifeCount = this.lives.getChildren();
-    console.log(lifeCount);
     const lifeToRemove = lifeCount.length - 1;
     if (lifeCount.length === 1) {
-      console.log('out of lives');
+      this.scene.stop('PlayScene');
+      this.scene.start('GameOverScene');
     } else {
       this.lives.remove(lifeCount[lifeToRemove], true, true);
     }

@@ -4,6 +4,7 @@ import MenuScene from './scenes/MenuScene';
 import PreloadScene from './scenes/PreloadScene';
 import ScoreScene from './scenes/ScoreScene';
 import PauseScene from './scenes/PauseScene';
+import GameOverScene from './scenes/GameOverScene';
 
 //config passed to phase game object
 const WIDTH = 400;
@@ -21,7 +22,8 @@ const scenes = [
   MenuScene, 
   ScoreScene,
   PlayScene,
-  PauseScene
+  PauseScene,
+  GameOverScene
 ]
 
 const createScene = scene => new scene(SHARED_CONFIG);
