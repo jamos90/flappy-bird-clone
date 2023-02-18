@@ -1,12 +1,15 @@
 import BaseScene from './BaseScene';
+import { IgnoreCaseMode } from 'css-what';
 
 const PIPES_TO_RENDER = 4;
+let LIVES_COUNT = 3;
 
 class PlayScene extends BaseScene {
   constructor(config) {
     super('PlayScene', config);
     this.bird = null;
     this.pipes = null;
+    this.lives = null;
     this.pipeHorizontalDistance = 0;
     this.flapVelocity = 300;
     this.score = 0;
@@ -42,6 +45,7 @@ class PlayScene extends BaseScene {
     this.createBestScore();
     this.handleInputs();
     this.listenToEvents();
+    this.createLives();
 
     this.anims.create({
       key: 'fly',
@@ -101,6 +105,15 @@ createPipes() {
   this.pipes.setVelocityX(-200);
 }
 
+createLives() {
+  let xOffSet = 10;
+  this.lives = this.physics.add.group();
+  for (let i = 0; i < LIVES_COUNT; i ++) {
+    const lifeIcon = this.lives.create(xOffSet, 80, 'life_icon').setOrigin(0,0);
+    xOffSet += 20;
+  }
+}
+
 createColliders() {
   this.physics.add.collider(this.bird  , this.pipes, this.gameOver, null, this);
 }
@@ -158,6 +171,7 @@ handleInputs() {
   }
   
   gameOver() {
+    const lives = this.lives.getChildren();
     this.physics.pause();
     this.bird.setTint(0xEE4824);
 
@@ -167,6 +181,12 @@ handleInputs() {
     if (this.score > bestScore || !bestScore) { 
       this.setBestScore();
     }
+
+    this.handleRemoveLife();
+  
+    // console.log(this.lives.getChildren());
+    // this.lives.remove(this.lives.getChildren()[2], true, true);
+    // console.log(this.lives.killAndHide(this.lives.getChildren()));
     //restart re-calls your create function
     this.time.addEvent({
       delay: 1000,
@@ -253,6 +273,18 @@ handleInputs() {
       this.physics.resume();
       this.timedEvent.remove();
     }
+  }
+
+  handleRemoveLife() {
+    const lifeCount = this.lives.getChildren();
+    console.log(lifeCount);
+    const lifeToRemove = lifeCount.length - 1;
+    if (lifeCount.length === 1) {
+      console.log('out of lives');
+    } else {
+      this.lives.remove(lifeCount[lifeToRemove], true, true);
+    }
+    LIVES_COUNT --;
   }
 }
 
