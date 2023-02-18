@@ -142,11 +142,11 @@ handleInputs() {
   }
 
   increaseDifficulty() {
-    if (this.score === 5) {
+    if (this.score === 20) {
       this.currentDifficulty = 'normal'
     }
 
-    if (this.score === 10) {
+    if (this.score === 50) {
       this.currentDifficulty = 'hard'
     }
   }
