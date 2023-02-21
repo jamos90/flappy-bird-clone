@@ -36,7 +36,7 @@ class GameOverScene extends BaseScene {
   handleMenuItemClick(menuItem) {
     if (menuItem.scene && menuItem.text.toLowerCase() === 'retry') {
       this.scene.stop();
-      this.scene.resume(menuItem.scene);
+      this.scene.start(menuItem.scene);
     }
 
     if (menuItem.scene && menuItem.text.toLowerCase() === 'exit') {
