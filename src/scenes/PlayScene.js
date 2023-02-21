@@ -106,7 +106,7 @@ createPipes() {
 }
 
 createLives() {
-  if(LIVES_COUNT ===0) LIVES_COUNT = 3;
+  if (LIVES_COUNT ===0) LIVES_COUNT = 3;
   let xOffSet = 10;
   this.lives = this.physics.add.group();
   for (let i = 0; i < LIVES_COUNT; i ++) {

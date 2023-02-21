@@ -13,6 +13,7 @@ class GameOverScene extends BaseScene {
   create() {
     super.create();
     this.createMenu(this.menu, (menuItem) => this.setUpMenuEvents(menuItem));
+    this.add.text(this.config.width * 0.3 ,this.config.height * 0.05,  'Gave Over', {fontSize: 32, fill: '#ffff'});
   }
 
   setUpMenuEvents(menuItem) {
